@@ -1,0 +1,22 @@
+{
+  "cohabitation_start": "2008-01-01",
+  "separation_date": "2026-04-19",
+  "spouse_a": {
+    "age": 58,
+    "province": "ON",
+    "income_sources": { "t4": 200000 },
+    "re_partnered": false
+  },
+  "spouse_b": {
+    "age": 52,
+    "province": "NS",
+    "income_sources": { "t4": 20000 },
+    "re_partnered": false
+  },
+  "children": [
+    { "birthdate": "2024-01-01", "residence": "shared" },
+    { "birthdate": "2020-01-01", "residence": "shared" },
+    { "birthdate": "2012-01-01", "residence": "shared" }
+  ],
+  "section_7_monthly": 150
+}

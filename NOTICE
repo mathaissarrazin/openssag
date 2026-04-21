@@ -1,0 +1,23 @@
+OpenSSAG
+Copyright 2026 The OpenSSAG Contributors
+
+This product includes software developed under the Apache License 2.0.
+
+This software references the following public-domain and government-of-Canada
+materials for the purpose of implementing statutory formulas. These materials
+are not redistributed by this project; they are cited and interpreted:
+
+  - Spousal Support Advisory Guidelines — Final Version, July 2008
+    (Rogerson & Thompson, Department of Justice Canada)
+  - Spousal Support Advisory Guidelines: The Revised User's Guide, April 2016
+    (Rogerson & Thompson, Department of Justice Canada)
+  - Federal Child Support Guidelines, SOR/97-175 (current consolidation,
+    Department of Justice Canada), including Schedule I (Federal Child Support
+    Tables) and Schedule III (Adjustments to income)
+  - Income Tax Act, R.S.C. 1985, c. 1 (5th Supp.) and associated federal and
+    provincial tax legislation
+  - Canada Revenue Agency published rates, brackets, and benefit parameters
+    for the 2026 taxation year
+
+This software is not endorsed by or affiliated with the Department of Justice
+Canada, the Canada Revenue Agency, or any provincial government.

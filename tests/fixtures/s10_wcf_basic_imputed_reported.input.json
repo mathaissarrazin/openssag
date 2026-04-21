@@ -1,0 +1,20 @@
+{
+  "cohabitation_start": "2010-06-01",
+  "separation_date": "2026-04-19",
+  "spouse_a": {
+    "age": 44,
+    "province": "BC",
+    "income_sources": { "t4": 80000 },
+    "imputed": true,
+    "reported_income": 30000
+  },
+  "spouse_b": {
+    "age": 42,
+    "province": "BC",
+    "income_sources": { "t4": 45000 }
+  },
+  "children": [
+    { "birthdate": "2015-03-10", "residence": "spouse_b" }
+  ],
+  "section_7_monthly": 0
+}

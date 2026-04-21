@@ -1,0 +1,23 @@
+{
+  "cohabitation_start": "2012-09-01",
+  "separation_date": "2026-04-19",
+  "spouse_a": {
+    "age": 45,
+    "province": "BC",
+    "income_sources": { "t4": 140000 },
+    "prior_child_support_paid": 15000,
+    "prior_spousal_support_paid": 6000
+  },
+  "spouse_b": {
+    "age": 40,
+    "province": "BC",
+    "income_sources": { "t4": 40000 },
+    "prior_child_support_received": 8400,
+    "prior_spousal_support_received": 3600
+  },
+  "children": [
+    { "birthdate": "2016-05-20", "residence": "spouse_b" },
+    { "birthdate": "2019-11-02", "residence": "spouse_b" }
+  ],
+  "section_7_monthly": 0
+}
