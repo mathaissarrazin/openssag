@@ -9,7 +9,7 @@ import { SELF_SUPPORT_RESERVE_BC_2026 } from "./floor";
 import { totalGuidelinesIncome } from "./section-7";
 import { solveSpousalSupport } from "./solver";
 import type { SolverParty } from "./indi";
-import type { SpouseInput } from "@/types/spousal-support";
+import type { SpouseInput } from "../../types/spousal-support";
 import {
   filterDependent,
   bucketByAge,
@@ -17,7 +17,7 @@ import {
   splitBucketsByParent,
   getYoungestAge,
 } from "./children-derivation";
-import type { SSAGInput, SSAGResult } from "@/types/spousal-support";
+import type { SSAGInput, SSAGResult } from "../../types/spousal-support";
 
 const SSAG_INCOME_CEILING = 350_000;
 

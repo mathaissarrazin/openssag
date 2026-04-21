@@ -1,5 +1,5 @@
-import type { BracketLine, BracketTaxDetail } from "@/types/ssag-detail";
-import type { TaxBracket } from "@/types/tax";
+import type { BracketLine, BracketTaxDetail } from "../../types/ssag-detail";
+import type { TaxBracket } from "../../types/tax";
 
 /**
  * Explain a bracket tax calculation line-by-line.

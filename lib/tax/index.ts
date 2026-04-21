@@ -35,4 +35,4 @@ export { calculateNetIncome } from "./net-income";
 export type { NetIncomeInput, NetIncomeBreakdown, SpousalSupportProvince } from "./net-income";
 
 // Types
-export type { TaxBracket, TaxJurisdiction } from "@/types/tax";
+export type { TaxBracket, TaxJurisdiction } from "../../types/tax";

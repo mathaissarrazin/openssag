@@ -1,4 +1,4 @@
-import type { TaxBracket } from "@/types/tax";
+import type { TaxBracket } from "../../types/tax";
 
 /**
  * Calculate gross income tax owing at a given jurisdiction's marginal brackets,

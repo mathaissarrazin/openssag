@@ -1,4 +1,4 @@
-import type { TaxJurisdiction } from "@/types/tax";
+import type { TaxJurisdiction } from "../../types/tax";
 
 /**
  * Nova Scotia personal income tax — 2026 tax year.

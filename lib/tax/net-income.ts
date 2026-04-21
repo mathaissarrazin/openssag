@@ -23,7 +23,7 @@ import {
   calculateBaseCPPContribution,
   calculateSelfEmployedCPP,
 } from "./cpp-ei-2026";
-import type { SpouseOverrides } from "@/types/overrides";
+import type { SpouseOverrides } from "../../types/overrides";
 import {
   calculateCCB,
   calculateGSTCredit,

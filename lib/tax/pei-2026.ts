@@ -1,4 +1,4 @@
-import type { TaxJurisdiction } from "@/types/tax";
+import type { TaxJurisdiction } from "../../types/tax";
 
 /**
  * Prince Edward Island personal income tax — 2026 tax year.

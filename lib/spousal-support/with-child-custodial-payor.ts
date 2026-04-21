@@ -1,15 +1,15 @@
 import {
   calculateChildSupport,
   lookupTableAmount,
-} from "@/lib/child-support/calculator";
+} from "../child-support/calculator";
 import { calculateSection7Shares, totalGuidelinesIncome } from "./section-7";
 import { calculateBothINDIs, type SolverParty } from "./indi";
 import { solveSpousalSupport } from "./solver";
 import { calculateWCFDuration } from "./duration";
 import { calculateWOCFAmount } from "./without-child";
-import type { SSAGRange, SSAGDuration } from "@/types/spousal-support";
-import type { SpousalSupportProvince } from "@/lib/tax/net-income";
-import type { SpouseOverrides } from "@/types/overrides";
+import type { SSAGRange, SSAGDuration } from "../../types/spousal-support";
+import type { SpousalSupportProvince } from "../tax/net-income";
+import type { SpouseOverrides } from "../../types/overrides";
 
 /**
  * SSAG With-Child-Support Formula — Custodial Payor.

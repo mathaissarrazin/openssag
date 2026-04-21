@@ -3,7 +3,7 @@ import type { FederalProvince } from "./province-tables";
 import type {
   ChildSupportInput,
   ChildSupportResult,
-} from "@/types/child-support";
+} from "../../types/child-support";
 
 /**
  * Look up the monthly guideline amount for a single payor income.

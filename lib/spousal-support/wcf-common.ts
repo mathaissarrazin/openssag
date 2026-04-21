@@ -1,7 +1,7 @@
 import { calculateBothINDIs, type SolverParty } from "./indi";
 import { solveSpousalSupport } from "./solver";
 import { calculateWCFDuration } from "./duration";
-import type { SSAGRange, SSAGDuration } from "@/types/spousal-support";
+import type { SSAGRange, SSAGDuration } from "../../types/spousal-support";
 
 /**
  * Shared scaffolding for all With-Child-Support variants.

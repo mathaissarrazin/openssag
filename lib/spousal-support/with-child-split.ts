@@ -1,11 +1,11 @@
 import {
   calculateChildSupport,
   lookupTableAmount,
-} from "@/lib/child-support/calculator";
+} from "../child-support/calculator";
 import { calculateSection7Shares, totalGuidelinesIncome } from "./section-7";
 import { runWCFSolver, type WCFSolverOutput } from "./wcf-common";
-import type { SpousalSupportProvince } from "@/lib/tax/net-income";
-import type { SpouseOverrides } from "@/types/overrides";
+import type { SpousalSupportProvince } from "../tax/net-income";
+import type { SpouseOverrides } from "../../types/overrides";
 
 /**
  * SSAG With-Child-Support Formula — Split Custody.

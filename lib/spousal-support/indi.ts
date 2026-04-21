@@ -1,5 +1,5 @@
-import { calculateNetIncome, type SpousalSupportProvince } from "@/lib/tax/net-income";
-import type { SpouseOverrides } from "@/types/overrides";
+import { calculateNetIncome, type SpousalSupportProvince } from "../tax/net-income";
+import type { SpouseOverrides } from "../../types/overrides";
 import { calculateSection7Shares } from "./section-7";
 
 /**

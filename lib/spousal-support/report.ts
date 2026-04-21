@@ -16,8 +16,8 @@ import type {
   DataSource,
   MethodologyNote,
   CustodialPayorBreakdown,
-} from "@/types/ssag-detail";
-import type { SSAGInput, SSAGResult } from "@/types/spousal-support";
+} from "../../types/ssag-detail";
+import type { SSAGInput, SSAGResult } from "../../types/spousal-support";
 import { yearsBetween } from "./dates";
 import {
   filterDependent,
@@ -27,25 +27,25 @@ import {
   getYoungestAge,
   computeAge,
 } from "./children-derivation";
-import { lookupTableAmount } from "@/lib/child-support/calculator";
+import { lookupTableAmount } from "../child-support/calculator";
 import { calculateSection7Shares, totalGuidelinesIncome } from "./section-7";
 import {
   FEDERAL_2026,
   CANADA_EMPLOYMENT_AMOUNT_2026,
   federalEffectiveBPA,
-} from "@/lib/tax/federal-2026";
-import { BC_2026 } from "@/lib/tax/bc-2026";
-import { AB_2026 } from "@/lib/tax/alberta-2026";
-import { ON_2026 } from "@/lib/tax/ontario-2026";
-import { SK_2026 } from "@/lib/tax/saskatchewan-2026";
-import { MB_2026 } from "@/lib/tax/manitoba-2026";
-import { NB_2026, calculateNBLowIncomeTaxReduction } from "@/lib/tax/new-brunswick-2026";
-import { NS_2026, calculateNSLowIncomeTaxReduction } from "@/lib/tax/nova-scotia-2026";
-import { PE_2026, calculatePELowIncomeTaxReduction } from "@/lib/tax/pei-2026";
-import { NL_2026, calculateNLLowIncomeTaxReduction } from "@/lib/tax/newfoundland-2026";
-import { YT_2026 } from "@/lib/tax/yukon-2026";
-import { NT_2026 } from "@/lib/tax/northwest-territories-2026";
-import { NU_2026 } from "@/lib/tax/nunavut-2026";
+} from "../tax/federal-2026";
+import { BC_2026 } from "../tax/bc-2026";
+import { AB_2026 } from "../tax/alberta-2026";
+import { ON_2026 } from "../tax/ontario-2026";
+import { SK_2026 } from "../tax/saskatchewan-2026";
+import { MB_2026 } from "../tax/manitoba-2026";
+import { NB_2026, calculateNBLowIncomeTaxReduction } from "../tax/new-brunswick-2026";
+import { NS_2026, calculateNSLowIncomeTaxReduction } from "../tax/nova-scotia-2026";
+import { PE_2026, calculatePELowIncomeTaxReduction } from "../tax/pei-2026";
+import { NL_2026, calculateNLLowIncomeTaxReduction } from "../tax/newfoundland-2026";
+import { YT_2026 } from "../tax/yukon-2026";
+import { NT_2026 } from "../tax/northwest-territories-2026";
+import { NU_2026 } from "../tax/nunavut-2026";
 import {
   CPP_2026,
   EI_2026,
@@ -54,8 +54,8 @@ import {
   calculateEnhancedCPPDeduction,
   calculateBaseCPPContribution,
   calculateSelfEmployedCPP,
-} from "@/lib/tax/cpp-ei-2026";
-import { calculateNetIncome, PROVINCIAL_PENSION_DTC_2026, type SpousalSupportProvince } from "@/lib/tax/net-income";
+} from "../tax/cpp-ei-2026";
+import { calculateNetIncome, PROVINCIAL_PENSION_DTC_2026, type SpousalSupportProvince } from "../tax/net-income";
 import {
   CCB_2025_2026,
   BC_FAMILY_BENEFIT_2025_2026,
@@ -88,8 +88,8 @@ import {
   PE_SALES_TAX_CREDIT_2026, calculatePESalesTaxCredit,
   NL_INCOME_SUPPLEMENT_2026, calculateNLIncomeSupplement,
   NL_SENIORS_BENEFIT_2026, calculateNLSeniorsBenefit,
-} from "@/lib/tax/benefits-2026";
-import { buildBracketTaxDetail, explainBracketTax } from "@/lib/tax/bracket-detail";
+} from "../tax/benefits-2026";
+import { buildBracketTaxDetail, explainBracketTax } from "../tax/bracket-detail";
 
 const FORMULA_LABELS: Record<SSAGResult["formula"], string> = {
   "without-child": "Without Child Support Formula (WOCF)",
@@ -699,7 +699,7 @@ function buildSpouseDetail(params: {
   age?: number;
   isCoupled?: boolean;
   newPartnerNetIncome?: number;
-  overrides?: import("@/types/overrides").SpouseOverrides;
+  overrides?: import("../../types/overrides").SpouseOverrides;
   /**
    * WOCF path: skip the notional-CS / Section 7 / INDI adjustments block
    * since INDI is not a target for the Without-Child-Support Formula.
@@ -2640,10 +2640,10 @@ function fmtCAD(n: number): string {
 
 function buildAppliedOverrides(
   input: SSAGInput,
-): import("@/types/ssag-detail").AppliedOverride[] | undefined {
+): import("../../types/ssag-detail").AppliedOverride[] | undefined {
   const o = input.overrides;
   if (!o) return undefined;
-  const out: import("@/types/ssag-detail").AppliedOverride[] = [];
+  const out: import("../../types/ssag-detail").AppliedOverride[] = [];
 
   if (o.manualSpousalSupport?.monthly !== undefined) {
     out.push({
@@ -2654,7 +2654,7 @@ function buildAppliedOverrides(
   }
 
   const spouseFields: Array<{
-    key: keyof import("@/types/overrides").SpouseOverrides;
+    key: keyof import("../../types/overrides").SpouseOverrides;
     label: string;
     kind: "currency" | "percent";
   }> = [

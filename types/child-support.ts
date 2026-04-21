@@ -2,7 +2,7 @@
  * Shared types for child support calculations.
  */
 
-import type { FederalProvince } from "@/lib/child-support/province-tables";
+import type { FederalProvince } from "../lib/child-support/province-tables";
 
 export type { FederalProvince };
 

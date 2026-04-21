@@ -1,4 +1,4 @@
-import type { SSAGDuration } from "@/types/spousal-support";
+import type { SSAGDuration } from "../../types/spousal-support";
 
 /**
  * WOCF duration rules under the SSAG (2016 Revised User's Guide):

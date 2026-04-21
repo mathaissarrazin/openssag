@@ -1,15 +1,15 @@
 import {
   calculateChildSupport,
   lookupTableAmount,
-} from "@/lib/child-support/calculator";
+} from "../child-support/calculator";
 import { calculateSection7Shares, totalGuidelinesIncome } from "./section-7";
 // CS table lookups and notional CS use Guidelines income (Federal CSG s.16 /
 // Sch. III), not T4 alone. The spouse objects' `grossIncome` field is T4
 // only; the tax engine sums all sources itself, so solver profiles still
 // receive T4 + breakout fields unchanged.
 import { runWCFSolver, type WCFSolverOutput } from "./wcf-common";
-import type { SpousalSupportProvince } from "@/lib/tax/net-income";
-import type { SpouseOverrides } from "@/types/overrides";
+import type { SpousalSupportProvince } from "../tax/net-income";
+import type { SpouseOverrides } from "../../types/overrides";
 
 /**
  * SSAG With-Child-Support Formula — Basic (single primary custodian).

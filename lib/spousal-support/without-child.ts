@@ -1,4 +1,4 @@
-import type { SSAGRange } from "@/types/spousal-support";
+import type { SSAGRange } from "../../types/spousal-support";
 
 /**
  * SSAG Without-Child-Support Formula (WOCF) — amount.

@@ -1,4 +1,4 @@
-import type { ChildEntry, CustodialArrangement } from "@/types/spousal-support";
+import type { ChildEntry, CustodialArrangement } from "../../types/spousal-support";
 
 /** Compute a child's current age (as whole years) given a birthdate. */
 export function computeAge(birthdateISO: string, asOf: Date): number {
