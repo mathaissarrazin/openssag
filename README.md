@@ -6,6 +6,8 @@ With Child Support Formula (WCF) variants — together with the federal and
 provincial tax and Federal Child Support Guidelines (FCSG) engines that the
 SSAG requires as inputs.
 
+Live (embeddable) demo available at [simplyseparation.ca/embed/spousal-support](https://www.simplyseparation.ca/embed/spousal-support)
+
 > **Status:** early release. The engine has been validated against the SSAG
 > User's Guide worked examples and a growing set of regression anchors, and
 > ships with a dual-adversarial LLM audit harness (see `tests/`). It is not a
