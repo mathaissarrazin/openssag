@@ -38,6 +38,11 @@ function pushFloorWarnings(
   payorIncome: number,
   recipientIncome: number,
 ): void {
+  if (payorIncome < 0 || recipientIncome < 0) {
+    warnings.push(
+      `A party's Guidelines income is negative after Schedule III deductions (payor $${payorIncome.toLocaleString("en-CA")}, recipient $${recipientIncome.toLocaleString("en-CA")}). This typically indicates a large business investment loss, carrying charges, or prior-support deduction exceeding positive income sources. The SSAG/FCSG formulas are not meaningful on negative Guidelines income — verify the entered deductions and consult a family law professional.`,
+    );
+  }
   if (payorIncome < SELF_SUPPORT_RESERVE_BC_2026) {
     warnings.push(
       `Payor income ($${payorIncome.toLocaleString("en-CA")}) is below SSAG's $${SELF_SUPPORT_RESERVE_BC_2026.toLocaleString("en-CA")} self-support reserve. Under the SSAG, spousal support is generally not payable at this income level, though exceptions exist. Treat the range below as discretionary.`,
@@ -83,6 +88,9 @@ function wocfSolverParty(spouse: SpouseInput): SolverParty {
     priorChildSupportPaid: spouse.priorChildSupportPaid,
     priorSpousalSupportPaid: spouse.priorSpousalSupportPaid,
     priorSpousalSupportReceived: spouse.priorSpousalSupportReceived,
+    employmentExpensesOther: spouse.employmentExpensesOther,
+    carryingCharges: spouse.carryingCharges,
+    businessInvestmentLosses: spouse.businessInvestmentLosses,
   };
 }
 
@@ -187,6 +195,15 @@ export function calculateSpousalSupport(input: SSAGInput): SSAGResult {
   const priorCSPaidArr = [input.spouse1.priorChildSupportPaid ?? 0, input.spouse2.priorChildSupportPaid ?? 0] as const;
   const priorSSPaidArr = [input.spouse1.priorSpousalSupportPaid ?? 0, input.spouse2.priorSpousalSupportPaid ?? 0] as const;
   const priorSSReceivedArr = [input.spouse1.priorSpousalSupportReceived ?? 0, input.spouse2.priorSpousalSupportReceived ?? 0] as const;
+  const priorCSReceivedArr = [input.spouse1.priorChildSupportReceived ?? 0, input.spouse2.priorChildSupportReceived ?? 0] as const;
+  const empExpOtherArr = [input.spouse1.employmentExpensesOther ?? 0, input.spouse2.employmentExpensesOther ?? 0] as const;
+  const carryingChargesArr = [input.spouse1.carryingCharges ?? 0, input.spouse2.carryingCharges ?? 0] as const;
+  const bilArr = [input.spouse1.businessInvestmentLosses ?? 0, input.spouse2.businessInvestmentLosses ?? 0] as const;
+  const priorPeriodSEArr = [input.spouse1.priorPeriodSelfEmploymentAdjustment ?? 0, input.spouse2.priorPeriodSelfEmploymentAdjustment ?? 0] as const;
+  const splitPensionArr = [input.spouse1.splitPensionAddBack ?? 0, input.spouse2.splitPensionAddBack ?? 0] as const;
+  const splitPensionDeductArr = [input.spouse1.splitPensionTransfereeDeduct ?? 0, input.spouse2.splitPensionTransfereeDeduct ?? 0] as const;
+  const ccpcStockArr = [input.spouse1.ccpcStockOptionBenefit ?? 0, input.spouse2.ccpcStockOptionBenefit ?? 0] as const;
+  const partnershipNALArr = [input.spouse1.partnershipNonArmsLengthAddBack ?? 0, input.spouse2.partnershipNonArmsLengthAddBack ?? 0] as const;
   const isCoupledArr = [input.spouse1.isCoupled, input.spouse2.isCoupled] as const;
   const newPartnerNetIncomeArr = [input.spouse1.newPartnerNetIncome, input.spouse2.newPartnerNetIncome] as const;
   const overridesArr = [input.overrides?.spouse1, input.overrides?.spouse2] as const;
@@ -249,6 +266,15 @@ export function calculateSpousalSupport(input: SSAGInput): SSAGResult {
         priorChildSupportPaid: priorCSPaidArr[higherIdx],
         priorSpousalSupportPaid: priorSSPaidArr[higherIdx],
         priorSpousalSupportReceived: priorSSReceivedArr[higherIdx],
+        priorChildSupportReceived: priorCSReceivedArr[higherIdx],
+        employmentExpensesOther: empExpOtherArr[higherIdx],
+        carryingCharges: carryingChargesArr[higherIdx],
+        businessInvestmentLosses: bilArr[higherIdx],
+        priorPeriodSelfEmploymentAdjustment: priorPeriodSEArr[higherIdx],
+        splitPensionAddBack: splitPensionArr[higherIdx],
+        splitPensionTransfereeDeduct: splitPensionDeductArr[higherIdx],
+        ccpcStockOptionBenefit: ccpcStockArr[higherIdx],
+        partnershipNonArmsLengthAddBack: partnershipNALArr[higherIdx],
       },
       lowerEarner: {
         grossIncome: incomes[lowerIdx],
@@ -269,6 +295,15 @@ export function calculateSpousalSupport(input: SSAGInput): SSAGResult {
         priorChildSupportPaid: priorCSPaidArr[lowerIdx],
         priorSpousalSupportPaid: priorSSPaidArr[lowerIdx],
         priorSpousalSupportReceived: priorSSReceivedArr[lowerIdx],
+        priorChildSupportReceived: priorCSReceivedArr[lowerIdx],
+        employmentExpensesOther: empExpOtherArr[lowerIdx],
+        carryingCharges: carryingChargesArr[lowerIdx],
+        businessInvestmentLosses: bilArr[lowerIdx],
+        priorPeriodSelfEmploymentAdjustment: priorPeriodSEArr[lowerIdx],
+        splitPensionAddBack: splitPensionArr[lowerIdx],
+        splitPensionTransfereeDeduct: splitPensionDeductArr[lowerIdx],
+        ccpcStockOptionBenefit: ccpcStockArr[lowerIdx],
+        partnershipNonArmsLengthAddBack: partnershipNALArr[lowerIdx],
       },
       childrenUnder6,
       children6to17,
@@ -332,6 +367,15 @@ export function calculateSpousalSupport(input: SSAGInput): SSAGResult {
         priorChildSupportPaid: priorCSPaidArr[0],
         priorSpousalSupportPaid: priorSSPaidArr[0],
         priorSpousalSupportReceived: priorSSReceivedArr[0],
+        priorChildSupportReceived: priorCSReceivedArr[0],
+        employmentExpensesOther: empExpOtherArr[0],
+        carryingCharges: carryingChargesArr[0],
+        businessInvestmentLosses: bilArr[0],
+        priorPeriodSelfEmploymentAdjustment: priorPeriodSEArr[0],
+        splitPensionAddBack: splitPensionArr[0],
+        splitPensionTransfereeDeduct: splitPensionDeductArr[0],
+        ccpcStockOptionBenefit: ccpcStockArr[0],
+        partnershipNonArmsLengthAddBack: partnershipNALArr[0],
       },
       spouse2: {
         grossIncome: incomes[1],
@@ -354,6 +398,15 @@ export function calculateSpousalSupport(input: SSAGInput): SSAGResult {
         priorChildSupportPaid: priorCSPaidArr[1],
         priorSpousalSupportPaid: priorSSPaidArr[1],
         priorSpousalSupportReceived: priorSSReceivedArr[1],
+        priorChildSupportReceived: priorCSReceivedArr[1],
+        employmentExpensesOther: empExpOtherArr[1],
+        carryingCharges: carryingChargesArr[1],
+        businessInvestmentLosses: bilArr[1],
+        priorPeriodSelfEmploymentAdjustment: priorPeriodSEArr[1],
+        splitPensionAddBack: splitPensionArr[1],
+        splitPensionTransfereeDeduct: splitPensionDeductArr[1],
+        ccpcStockOptionBenefit: ccpcStockArr[1],
+        partnershipNonArmsLengthAddBack: partnershipNALArr[1],
       },
       yearsOfRelationship,
       section7MonthlyTotal,
@@ -432,6 +485,15 @@ export function calculateSpousalSupport(input: SSAGInput): SSAGResult {
         priorChildSupportPaid: priorCSPaidArr[custodialIdx],
         priorSpousalSupportPaid: priorSSPaidArr[custodialIdx],
         priorSpousalSupportReceived: priorSSReceivedArr[custodialIdx],
+        priorChildSupportReceived: priorCSReceivedArr[custodialIdx],
+        employmentExpensesOther: empExpOtherArr[custodialIdx],
+        carryingCharges: carryingChargesArr[custodialIdx],
+        businessInvestmentLosses: bilArr[custodialIdx],
+        priorPeriodSelfEmploymentAdjustment: priorPeriodSEArr[custodialIdx],
+        splitPensionAddBack: splitPensionArr[custodialIdx],
+        splitPensionTransfereeDeduct: splitPensionDeductArr[custodialIdx],
+        ccpcStockOptionBenefit: ccpcStockArr[custodialIdx],
+        partnershipNonArmsLengthAddBack: partnershipNALArr[custodialIdx],
       },
       nonCustodialParent: {
         grossIncome: incomes[nonCustodialIdx],
@@ -452,6 +514,15 @@ export function calculateSpousalSupport(input: SSAGInput): SSAGResult {
         priorChildSupportPaid: priorCSPaidArr[nonCustodialIdx],
         priorSpousalSupportPaid: priorSSPaidArr[nonCustodialIdx],
         priorSpousalSupportReceived: priorSSReceivedArr[nonCustodialIdx],
+        priorChildSupportReceived: priorCSReceivedArr[nonCustodialIdx],
+        employmentExpensesOther: empExpOtherArr[nonCustodialIdx],
+        carryingCharges: carryingChargesArr[nonCustodialIdx],
+        businessInvestmentLosses: bilArr[nonCustodialIdx],
+        priorPeriodSelfEmploymentAdjustment: priorPeriodSEArr[nonCustodialIdx],
+        splitPensionAddBack: splitPensionArr[nonCustodialIdx],
+        splitPensionTransfereeDeduct: splitPensionDeductArr[nonCustodialIdx],
+        ccpcStockOptionBenefit: ccpcStockArr[nonCustodialIdx],
+        partnershipNonArmsLengthAddBack: partnershipNALArr[nonCustodialIdx],
       },
       yearsOfRelationship,
       section7MonthlyTotal,
@@ -511,6 +582,15 @@ export function calculateSpousalSupport(input: SSAGInput): SSAGResult {
       priorChildSupportPaid: priorCSPaidArr[nonCustodialIdx],
       priorSpousalSupportPaid: priorSSPaidArr[nonCustodialIdx],
       priorSpousalSupportReceived: priorSSReceivedArr[nonCustodialIdx],
+      priorChildSupportReceived: priorCSReceivedArr[nonCustodialIdx],
+      employmentExpensesOther: empExpOtherArr[nonCustodialIdx],
+      carryingCharges: carryingChargesArr[nonCustodialIdx],
+      businessInvestmentLosses: bilArr[nonCustodialIdx],
+      priorPeriodSelfEmploymentAdjustment: priorPeriodSEArr[nonCustodialIdx],
+      splitPensionAddBack: splitPensionArr[nonCustodialIdx],
+      splitPensionTransfereeDeduct: splitPensionDeductArr[nonCustodialIdx],
+      ccpcStockOptionBenefit: ccpcStockArr[nonCustodialIdx],
+      partnershipNonArmsLengthAddBack: partnershipNALArr[nonCustodialIdx],
     },
     recipient: {
       grossIncome: incomes[custodialIdx],
@@ -533,6 +613,15 @@ export function calculateSpousalSupport(input: SSAGInput): SSAGResult {
       priorChildSupportPaid: priorCSPaidArr[custodialIdx],
       priorSpousalSupportPaid: priorSSPaidArr[custodialIdx],
       priorSpousalSupportReceived: priorSSReceivedArr[custodialIdx],
+      priorChildSupportReceived: priorCSReceivedArr[custodialIdx],
+      employmentExpensesOther: empExpOtherArr[custodialIdx],
+      carryingCharges: carryingChargesArr[custodialIdx],
+      businessInvestmentLosses: bilArr[custodialIdx],
+      priorPeriodSelfEmploymentAdjustment: priorPeriodSEArr[custodialIdx],
+      splitPensionAddBack: splitPensionArr[custodialIdx],
+      splitPensionTransfereeDeduct: splitPensionDeductArr[custodialIdx],
+      ccpcStockOptionBenefit: ccpcStockArr[custodialIdx],
+      partnershipNonArmsLengthAddBack: partnershipNALArr[custodialIdx],
     },
     yearsOfRelationship,
     section7MonthlyTotal,

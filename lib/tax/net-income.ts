@@ -161,6 +161,27 @@ export interface NetIncomeInput {
    * is applied to the actual SS delta to keep the solver workable.
    */
   overrides?: SpouseOverrides;
+
+  // ── FCSG Schedule III / ITA deductions that reduce taxable income ────────
+  /**
+   * Employment expenses deductible under ITA s.8 other than union /
+   * professional dues (e.g. motor vehicle, home office, tradesperson tools,
+   * clergy residence). Reduces taxable income 1-for-1, same as union dues.
+   */
+  employmentExpensesOther?: number;
+  /**
+   * Carrying charges and interest expenses deductible under ITA
+   * s.20(1)(c)/(d)/(e)/(e.1)/(e.2) — investment loan interest, safety deposit
+   * box fees, investment counsel fees. Reduces taxable income 1-for-1.
+   */
+  carryingCharges?: number;
+  /**
+   * Actual business investment loss sustained in the year under ITA s.39(1)(c).
+   * Deducted as an allowable business investment loss (ABIL) at 50% against
+   * any income (ITA s.38(c)). The FCSG Sch. III §7 deduction for Guidelines
+   * income uses the full (100%) amount; taxable income uses 50%.
+   */
+  businessInvestmentLosses?: number;
 }
 
 export interface NetIncomeBreakdown {
@@ -543,7 +564,14 @@ export function calculateNetIncome(input: NetIncomeInput): NetIncomeBreakdown {
     pensionIncome = 0,
     eligibleDividends = 0,
     nonEligibleDividends = 0,
+    employmentExpensesOther = 0,
+    carryingCharges = 0,
+    businessInvestmentLosses = 0,
   } = input;
+
+  // ABIL — 50% of actual business investment loss is deductible against any
+  // income (ITA s.38(c) / s.39(1)(c)).
+  const abil = businessInvestmentLosses * 0.5;
 
   // EDC (Line 30400) and spousal amount (Line 30300) are mutually exclusive.
   // When living with a new partner, suppress EDC and apply spousal credit instead.
@@ -575,6 +603,9 @@ export function calculateNetIncome(input: NetIncomeInput): NetIncomeBreakdown {
       spousalSupportReceived -
       spousalSupportPaid -
       unionDues -
+      employmentExpensesOther -
+      carryingCharges -
+      abil -
       enhancedCPPDeduction -
       employerBaseCPPDeduction,
   );
@@ -701,6 +732,9 @@ export function calculateNetIncome(input: NetIncomeInput): NetIncomeBreakdown {
     - cpp
     - ei
     - unionDues
+    - employmentExpensesOther
+    - carryingCharges
+    - abil
     + spousalSupportReceived
     - spousalSupportPaid
     + (excludeCCB ? 0 : ccb)

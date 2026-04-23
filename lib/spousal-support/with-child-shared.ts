@@ -18,8 +18,8 @@ import type { SpouseOverrides } from "../../types/overrides";
  */
 
 export interface WCFSharedInput {
-  higherEarner: { grossIncome: number; unionDues: number; ageAtSeparation: number; province?: SpousalSupportProvince; otherIncome?: number; rrspWithdrawals?: number; capitalGainsActual?: number; selfEmploymentIncome?: number; pensionIncome?: number; eligibleDividends?: number; nonEligibleDividends?: number; nonTaxableIncome?: number; isCoupled?: boolean; newPartnerNetIncome?: number; overrides?: SpouseOverrides; priorChildSupportPaid?: number; priorSpousalSupportPaid?: number; priorSpousalSupportReceived?: number };
-  lowerEarner: { grossIncome: number; unionDues: number; ageAtSeparation: number; province?: SpousalSupportProvince; otherIncome?: number; rrspWithdrawals?: number; capitalGainsActual?: number; selfEmploymentIncome?: number; pensionIncome?: number; eligibleDividends?: number; nonEligibleDividends?: number; nonTaxableIncome?: number; isCoupled?: boolean; newPartnerNetIncome?: number; overrides?: SpouseOverrides; priorChildSupportPaid?: number; priorSpousalSupportPaid?: number; priorSpousalSupportReceived?: number };
+  higherEarner: { grossIncome: number; unionDues: number; ageAtSeparation: number; province?: SpousalSupportProvince; otherIncome?: number; rrspWithdrawals?: number; capitalGainsActual?: number; selfEmploymentIncome?: number; pensionIncome?: number; eligibleDividends?: number; nonEligibleDividends?: number; nonTaxableIncome?: number; isCoupled?: boolean; newPartnerNetIncome?: number; overrides?: SpouseOverrides; priorChildSupportPaid?: number; priorSpousalSupportPaid?: number; priorSpousalSupportReceived?: number; priorChildSupportReceived?: number; employmentExpensesOther?: number; carryingCharges?: number; businessInvestmentLosses?: number; priorPeriodSelfEmploymentAdjustment?: number; splitPensionAddBack?: number; splitPensionTransfereeDeduct?: number; ccpcStockOptionBenefit?: number; partnershipNonArmsLengthAddBack?: number };
+  lowerEarner: { grossIncome: number; unionDues: number; ageAtSeparation: number; province?: SpousalSupportProvince; otherIncome?: number; rrspWithdrawals?: number; capitalGainsActual?: number; selfEmploymentIncome?: number; pensionIncome?: number; eligibleDividends?: number; nonEligibleDividends?: number; nonTaxableIncome?: number; isCoupled?: boolean; newPartnerNetIncome?: number; overrides?: SpouseOverrides; priorChildSupportPaid?: number; priorSpousalSupportPaid?: number; priorSpousalSupportReceived?: number; priorChildSupportReceived?: number; employmentExpensesOther?: number; carryingCharges?: number; businessInvestmentLosses?: number; priorPeriodSelfEmploymentAdjustment?: number; splitPensionAddBack?: number; splitPensionTransfereeDeduct?: number; ccpcStockOptionBenefit?: number; partnershipNonArmsLengthAddBack?: number };
   childrenUnder6: number;
   children6to17: number;
   yearsOfRelationship: number;
@@ -103,6 +103,9 @@ export function calculateWCFShared(input: WCFSharedInput): WCFSharedResult {
     priorChildSupportPaid: input.higherEarner.priorChildSupportPaid,
     priorSpousalSupportPaid: input.higherEarner.priorSpousalSupportPaid,
     priorSpousalSupportReceived: input.higherEarner.priorSpousalSupportReceived,
+    employmentExpensesOther: input.higherEarner.employmentExpensesOther,
+    carryingCharges: input.higherEarner.carryingCharges,
+    businessInvestmentLosses: input.higherEarner.businessInvestmentLosses,
   };
   const ssRecipient = {
     grossIncome: input.lowerEarner.grossIncome,
@@ -130,6 +133,9 @@ export function calculateWCFShared(input: WCFSharedInput): WCFSharedResult {
     priorChildSupportPaid: input.lowerEarner.priorChildSupportPaid,
     priorSpousalSupportPaid: input.lowerEarner.priorSpousalSupportPaid,
     priorSpousalSupportReceived: input.lowerEarner.priorSpousalSupportReceived,
+    employmentExpensesOther: input.lowerEarner.employmentExpensesOther,
+    carryingCharges: input.lowerEarner.carryingCharges,
+    businessInvestmentLosses: input.lowerEarner.businessInvestmentLosses,
   };
 
   const solved = runWCFSolver(

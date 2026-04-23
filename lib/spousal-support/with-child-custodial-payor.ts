@@ -51,6 +51,15 @@ export interface WCFCustodialPayorInput {
     priorChildSupportPaid?: number;
     priorSpousalSupportPaid?: number;
     priorSpousalSupportReceived?: number;
+    priorChildSupportReceived?: number;
+    employmentExpensesOther?: number;
+    carryingCharges?: number;
+    businessInvestmentLosses?: number;
+    priorPeriodSelfEmploymentAdjustment?: number;
+    splitPensionAddBack?: number;
+    splitPensionTransfereeDeduct?: number;
+    ccpcStockOptionBenefit?: number;
+    partnershipNonArmsLengthAddBack?: number;
   };
   nonCustodialParent: {
     grossIncome: number;
@@ -71,6 +80,15 @@ export interface WCFCustodialPayorInput {
     priorChildSupportPaid?: number;
     priorSpousalSupportPaid?: number;
     priorSpousalSupportReceived?: number;
+    priorChildSupportReceived?: number;
+    employmentExpensesOther?: number;
+    carryingCharges?: number;
+    businessInvestmentLosses?: number;
+    priorPeriodSelfEmploymentAdjustment?: number;
+    splitPensionAddBack?: number;
+    splitPensionTransfereeDeduct?: number;
+    ccpcStockOptionBenefit?: number;
+    partnershipNonArmsLengthAddBack?: number;
   };
   yearsOfRelationship: number;
   section7MonthlyTotal: number;
@@ -172,6 +190,9 @@ export function calculateWCFCustodialPayor(
     priorChildSupportPaid: input.custodialParent.priorChildSupportPaid,
     priorSpousalSupportPaid: input.custodialParent.priorSpousalSupportPaid,
     priorSpousalSupportReceived: input.custodialParent.priorSpousalSupportReceived,
+    employmentExpensesOther: input.custodialParent.employmentExpensesOther,
+    carryingCharges: input.custodialParent.carryingCharges,
+    businessInvestmentLosses: input.custodialParent.businessInvestmentLosses,
   };
   const ssRecipientProfile: SolverParty = {
     grossIncome: input.nonCustodialParent.grossIncome,
@@ -198,6 +219,9 @@ export function calculateWCFCustodialPayor(
     priorChildSupportPaid: input.nonCustodialParent.priorChildSupportPaid,
     priorSpousalSupportPaid: input.nonCustodialParent.priorSpousalSupportPaid,
     priorSpousalSupportReceived: input.nonCustodialParent.priorSpousalSupportReceived,
+    employmentExpensesOther: input.nonCustodialParent.employmentExpensesOther,
+    carryingCharges: input.nonCustodialParent.carryingCharges,
+    businessInvestmentLosses: input.nonCustodialParent.businessInvestmentLosses,
   };
 
   // Precise NDI-equalization cap for ≥25y, using the full CP profiles

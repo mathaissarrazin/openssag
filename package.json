@@ -1,6 +1,6 @@
 {
   "name": "openssag",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Open-source implementation of Canada's Spousal Support Advisory Guidelines (SSAG), with supporting federal/provincial tax and Federal Child Support Guidelines engines.",
   "license": "Apache-2.0",
   "type": "module",
@@ -8,6 +8,7 @@
   "scripts": {
     "audit:cli": "tsx scripts/audit-run.ts",
     "validate:ssag": "tsx scripts/validate-ssag.ts",
+    "validate:schedule-iii": "tsx scripts/validate-schedule-iii.ts",
     "validate:tax": "tsx scripts/validate-tax-engine.ts",
     "validate:ab-tax": "tsx scripts/validate-alberta-tax.ts",
     "test:provinces": "tsx scripts/test-provinces.ts",

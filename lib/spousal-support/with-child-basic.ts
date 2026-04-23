@@ -40,6 +40,15 @@ export interface WCFBasicInput {
     priorChildSupportPaid?: number;
     priorSpousalSupportPaid?: number;
     priorSpousalSupportReceived?: number;
+    priorChildSupportReceived?: number;
+    employmentExpensesOther?: number;
+    carryingCharges?: number;
+    businessInvestmentLosses?: number;
+    priorPeriodSelfEmploymentAdjustment?: number;
+    splitPensionAddBack?: number;
+    splitPensionTransfereeDeduct?: number;
+    ccpcStockOptionBenefit?: number;
+    partnershipNonArmsLengthAddBack?: number;
   };
   recipient: {
     grossIncome: number;
@@ -62,6 +71,15 @@ export interface WCFBasicInput {
     priorChildSupportPaid?: number;
     priorSpousalSupportPaid?: number;
     priorSpousalSupportReceived?: number;
+    priorChildSupportReceived?: number;
+    employmentExpensesOther?: number;
+    carryingCharges?: number;
+    businessInvestmentLosses?: number;
+    priorPeriodSelfEmploymentAdjustment?: number;
+    splitPensionAddBack?: number;
+    splitPensionTransfereeDeduct?: number;
+    ccpcStockOptionBenefit?: number;
+    partnershipNonArmsLengthAddBack?: number;
   };
   yearsOfRelationship: number;
   section7MonthlyTotal: number;
@@ -138,6 +156,9 @@ export function calculateWCFBasic(input: WCFBasicInput): WCFBasicResult {
     priorChildSupportPaid: input.payor.priorChildSupportPaid,
     priorSpousalSupportPaid: input.payor.priorSpousalSupportPaid,
     priorSpousalSupportReceived: input.payor.priorSpousalSupportReceived,
+    employmentExpensesOther: input.payor.employmentExpensesOther,
+    carryingCharges: input.payor.carryingCharges,
+    businessInvestmentLosses: input.payor.businessInvestmentLosses,
   };
   const ssRecipient = {
     grossIncome: input.recipient.grossIncome,
@@ -163,6 +184,9 @@ export function calculateWCFBasic(input: WCFBasicInput): WCFBasicResult {
     priorChildSupportPaid: input.recipient.priorChildSupportPaid,
     priorSpousalSupportPaid: input.recipient.priorSpousalSupportPaid,
     priorSpousalSupportReceived: input.recipient.priorSpousalSupportReceived,
+    employmentExpensesOther: input.recipient.employmentExpensesOther,
+    carryingCharges: input.recipient.carryingCharges,
+    businessInvestmentLosses: input.recipient.businessInvestmentLosses,
   };
 
   const solved = runWCFSolver(

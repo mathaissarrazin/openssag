@@ -46,6 +46,15 @@ export interface WCFSplitInput {
     priorChildSupportPaid?: number;
     priorSpousalSupportPaid?: number;
     priorSpousalSupportReceived?: number;
+    priorChildSupportReceived?: number;
+    employmentExpensesOther?: number;
+    carryingCharges?: number;
+    businessInvestmentLosses?: number;
+    priorPeriodSelfEmploymentAdjustment?: number;
+    splitPensionAddBack?: number;
+    splitPensionTransfereeDeduct?: number;
+    ccpcStockOptionBenefit?: number;
+    partnershipNonArmsLengthAddBack?: number;
   };
   spouse2: {
     grossIncome: number;
@@ -68,6 +77,15 @@ export interface WCFSplitInput {
     priorChildSupportPaid?: number;
     priorSpousalSupportPaid?: number;
     priorSpousalSupportReceived?: number;
+    priorChildSupportReceived?: number;
+    employmentExpensesOther?: number;
+    carryingCharges?: number;
+    businessInvestmentLosses?: number;
+    priorPeriodSelfEmploymentAdjustment?: number;
+    splitPensionAddBack?: number;
+    splitPensionTransfereeDeduct?: number;
+    ccpcStockOptionBenefit?: number;
+    partnershipNonArmsLengthAddBack?: number;
   };
   yearsOfRelationship: number;
   section7MonthlyTotal: number;
@@ -173,6 +191,9 @@ export function calculateWCFSplit(input: WCFSplitInput): WCFSplitResult {
     priorChildSupportPaid: ssPayorData.priorChildSupportPaid,
     priorSpousalSupportPaid: ssPayorData.priorSpousalSupportPaid,
     priorSpousalSupportReceived: ssPayorData.priorSpousalSupportReceived,
+    employmentExpensesOther: ssPayorData.employmentExpensesOther,
+    carryingCharges: ssPayorData.carryingCharges,
+    businessInvestmentLosses: ssPayorData.businessInvestmentLosses,
   };
   const ssRecipientProfile = {
     grossIncome: ssRecipientData.grossIncome,
@@ -199,6 +220,9 @@ export function calculateWCFSplit(input: WCFSplitInput): WCFSplitResult {
     priorChildSupportPaid: ssRecipientData.priorChildSupportPaid,
     priorSpousalSupportPaid: ssRecipientData.priorSpousalSupportPaid,
     priorSpousalSupportReceived: ssRecipientData.priorSpousalSupportReceived,
+    employmentExpensesOther: ssRecipientData.employmentExpensesOther,
+    carryingCharges: ssRecipientData.carryingCharges,
+    businessInvestmentLosses: ssRecipientData.businessInvestmentLosses,
   };
 
   const solved = runWCFSolver(

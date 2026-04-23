@@ -37,7 +37,7 @@
 ### 2.2 Income
 
 - **Guidelines income (FCSG s.16 / Sch. III)** is the single income figure used for *both* child support and spousal support (RUG §6(g)).
-- **Non-taxable income** (workers' compensation, on-reserve employment income, long-term disability, etc.) is **grossed up by 25%** (FCSG Sch. III §19 default, referenced in RUG §6.6) into Guidelines income for WOCF / Custodial-Payor GID, s.7 apportionment, and CS table lookups. The **raw** (un-grossed) amount is added to INDI net income in WCF paths as cash-in-hand.
+- **Non-taxable income** (workers' compensation, on-reserve employment income, long-term disability, etc.) is **grossed up by 25%** (SSAG Revised User's Guide 2016 §6.6 — practitioner convention; not codified in FCSG Sch. III) into Guidelines income for WOCF / Custodial-Payor GID, s.7 apportionment, and CS table lookups. The **raw** (un-grossed) amount is added to INDI net income in WCF paths as cash-in-hand.
 - **Social assistance** is excluded from Guidelines income (FCSG Sch. III §4).
 - **Union / professional dues** are deducted only when entered by the user (FCSG Sch. III §1).
 - **Lump sums and capital gains** if entered periodically are treated as recurring income; lump sums must be tax-discounted separately and are outside the engine's scope.

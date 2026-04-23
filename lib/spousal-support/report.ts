@@ -202,7 +202,8 @@ function buildAssumptions(
   const base = [
     "Income types supported: T4 employment, self-employment (CPP both shares), pension income (qualifying for pension income credit), eligible dividends (38% gross-up, federal and provincial DTC applied), non-eligible dividends (15% gross-up, DTC applied), other taxable income (interest/rental/EI regular), RRSP/RRIF withdrawals, and capital gains (50% inclusion). CPP, EI, and Canada Employment Amount applied on T4 income.",
     "Social assistance (Ontario Works, ODSP, AISH, BC Income/Disability Assistance, and any similarly-named provincial or territorial assistance) must NOT be entered as income. SSAG excludes these per the 2016 Revised User's Guide, Ch. 2(d) — including social assistance in a recipient's income understates spousal support. If your situation includes such income, exclude it from every income field before running the calculation.",
-    "Union / professional dues are deducted only when entered by the user.",
+    "FCSG Schedule III adjustments to Guidelines income that are modeled when entered: §1 union/professional dues and other ITA s.8 employment expenses (motor vehicle, home office, tradesperson tools, etc.); §3.1 split-pension amount — add-back on the transferor side and deduction on the transferee side (pension stays with the original earner for Guidelines); §5 dividends at actual (not grossed-up) value; §6 capital gains at actual (not taxable-portion) value; §7 business investment losses at full 100% amount for Guidelines and 50% ABIL for tax; §8 carrying charges and investment interest under ITA s.20(1); §9 prior-period self-employment earnings adjustment; §10 non-arm's-length partnership/sole-proprietorship add-back (limited to wages/salaries/management fees; CCA on real property is not modeled); §11 CCPC stock-option benefit in the year of acquisition where the shares are NOT disposed of in the same year (the deferred s.7(1.1) case — do not enter if acquired and sold in the same year, since that benefit is already in T4 Box 38). Separately, non-taxable income (workers' comp, on-reserve employment, LTD) is grossed up by 25% per SSAG Revised User's Guide 2016 §6.6 — a practitioner convention, not a codified Schedule III provision. Prior spousal support paid to a prior family is deducted from Guidelines income (FCSG practice) and stacked onto tax-deductible SS paid. Prior child support paid to a prior family is deducted from Guidelines income but is not tax-deductible.",
+    "FCSG Schedule III items NOT modeled: §2 pre-1997 child support received (essentially extinct — if you hold a grandfathered pre-May-1997 child-support order, consult a family lawyer). §3 current-case spousal support received (handled naturally because SSAG computes pre-transfer Guidelines income). Prior child support received from a previous relationship is intentionally excluded from Guidelines income and INDI — it is earmarked for the prior kids (practitioner norm).",
   ];
   if (ctx.anyCoupled) {
     base.push(
@@ -598,14 +599,15 @@ function buildMethodologyNotes(
       "on-reserve employment income, long-term disability benefits, and " +
       "similar sources) is multiplied by 1.25 and added to Guidelines " +
       "income for WOCF / Custodial-Payor GID, Section 7 apportionment, and " +
-      "child-support table lookups. The 25% default follows SSAG RUG §6.6 / " +
-      "FCSG Sch. III §19 as an approximation of the party's marginal rate. " +
+      "child-support table lookups. The 25% default follows SSAG Revised " +
+      "User's Guide 2016 §6.6 as an approximation of the party's marginal " +
+      "rate (a practitioner convention; not codified in FCSG Sch. III). " +
       "For WCF INDI, the raw (un-grossed) amount is added to net disposable " +
       "income, since it is already cash-in-hand. Social assistance remains " +
       "excluded per RUG Ch. 2(d) and must NOT be entered here. Where a " +
       "party's marginal rate differs materially from 25%, adjust the " +
       "entered amount or consult a family lawyer or accountant.",
-    citation: "SSAG Revised User's Guide 2016 §6.6; FCSG Schedule III §19",
+    citation: "SSAG Revised User's Guide 2016 §6.6",
   });
 
   if (formula !== "without-child") {
@@ -709,6 +711,14 @@ function buildSpouseDetail(params: {
   priorSpousalSupportPaid?: number;
   priorSpousalSupportReceived?: number;
   priorChildSupportReceived?: number;
+  employmentExpensesOther?: number;
+  carryingCharges?: number;
+  businessInvestmentLosses?: number;
+  splitPensionAddBack?: number;
+  splitPensionTransfereeDeduct?: number;
+  ccpcStockOptionBenefit?: number;
+  partnershipNonArmsLengthAddBack?: number;
+  priorPeriodSelfEmploymentAdjustment?: number;
 }): SpouseFinancialDetail {
   const {
     label,
@@ -800,8 +810,27 @@ function buildSpouseDetail(params: {
     });
   if (unionDues > 0)
     taxableIncomeComponents.push({
-      label: "− Union / professional dues",
+      label: "− Union / professional dues (FCSG Sch. III §1)",
       amount: -unionDues,
+    });
+  const employmentExpensesOther = params.employmentExpensesOther ?? 0;
+  if (employmentExpensesOther > 0)
+    taxableIncomeComponents.push({
+      label: "− Other employment expenses (ITA s.8; FCSG Sch. III §1)",
+      amount: -employmentExpensesOther,
+    });
+  const carryingCharges = params.carryingCharges ?? 0;
+  if (carryingCharges > 0)
+    taxableIncomeComponents.push({
+      label: "− Carrying charges / investment interest (FCSG Sch. III §8)",
+      amount: -carryingCharges,
+    });
+  const businessInvestmentLosses = params.businessInvestmentLosses ?? 0;
+  const abil = businessInvestmentLosses * 0.5;
+  if (businessInvestmentLosses > 0)
+    taxableIncomeComponents.push({
+      label: `− ABIL — 50% of business investment loss (actual $${businessInvestmentLosses.toLocaleString("en-CA")}; FCSG Sch. III §7 / ITA s.39(1)(c))`,
+      amount: -abil,
     });
   const employeeEnhancedCPP = calculateEnhancedCPPDeduction(grossIncome);
   const seCPP = calculateSelfEmployedCPP(selfEmploymentIncome, grossIncome);
@@ -829,10 +858,95 @@ function buildSpouseDetail(params: {
       spousalSupportReceived -
       spousalSupportPaid -
       unionDues -
+      employmentExpensesOther -
+      carryingCharges -
+      abil -
       enhancedCPPDeduction -
       seCPP.employerBaseDeduction,
   );
   taxableIncomeComponents.push({ label: "Taxable income", amount: taxableIncome });
+
+  // ── Guidelines income composition (FCSG s.16 / Schedule III) ──
+  const nonTaxableIncomeRaw = params.nonTaxableIncome ?? 0;
+  const priorSpousalSupportReceived = params.priorSpousalSupportReceived ?? 0;
+  const priorChildSupportPaid = params.priorChildSupportPaid ?? 0;
+  const priorSpousalSupportPaid = params.priorSpousalSupportPaid ?? 0;
+  const splitPensionAddBack = params.splitPensionAddBack ?? 0;
+  const splitPensionTransfereeDeduct = params.splitPensionTransfereeDeduct ?? 0;
+  const ccpcStockOptionBenefit = params.ccpcStockOptionBenefit ?? 0;
+  const partnershipNonArmsLengthAddBack = params.partnershipNonArmsLengthAddBack ?? 0;
+  const priorPeriodSelfEmploymentAdjustment = params.priorPeriodSelfEmploymentAdjustment ?? 0;
+  const guidelinesIncomeComponents: Array<{ label: string; amount: number }> = [
+    { label: "Gross employment income (T4 Box 14)", amount: grossIncome },
+  ];
+  if (selfEmploymentIncome > 0)
+    guidelinesIncomeComponents.push({ label: "+ Self-employment income (net)", amount: selfEmploymentIncome });
+  if (pensionIncome > 0)
+    guidelinesIncomeComponents.push({ label: "+ Pension income", amount: pensionIncome });
+  if (otherIncome > 0)
+    guidelinesIncomeComponents.push({ label: "+ Other taxable income (interest / rental / EI regular)", amount: otherIncome });
+  if (rrspWithdrawals > 0)
+    guidelinesIncomeComponents.push({ label: "+ RRSP / RRIF withdrawals", amount: rrspWithdrawals });
+  if (capitalGainsActual > 0)
+    guidelinesIncomeComponents.push({ label: "+ Capital gains — actual, not taxable portion (Sch. III §6)", amount: capitalGainsActual });
+  if (eligibleDividends > 0)
+    guidelinesIncomeComponents.push({ label: "+ Eligible dividends — actual, not grossed-up (Sch. III §5)", amount: eligibleDividends });
+  if (nonEligibleDividends > 0)
+    guidelinesIncomeComponents.push({ label: "+ Non-eligible dividends — actual, not grossed-up (Sch. III §5)", amount: nonEligibleDividends });
+  if (nonTaxableIncomeRaw > 0) {
+    const grossedUp = nonTaxableIncomeRaw * 1.25;
+    guidelinesIncomeComponents.push({
+      label: `+ Non-taxable income × 1.25 gross-up (actual $${nonTaxableIncomeRaw.toLocaleString("en-CA")}; SSAG RUG 2016 §6.6)`,
+      amount: grossedUp,
+    });
+  }
+  if (priorSpousalSupportReceived > 0)
+    guidelinesIncomeComponents.push({ label: "+ Prior spousal support received (from prior relationship — taxable; Sch. III §3 excludes only current-case SS)", amount: priorSpousalSupportReceived });
+  if (splitPensionAddBack > 0)
+    guidelinesIncomeComponents.push({ label: "+ Split-pension amount transferred out — add-back (Sch. III §3.1 / ITA s.60.03)", amount: splitPensionAddBack });
+  if (ccpcStockOptionBenefit > 0)
+    guidelinesIncomeComponents.push({ label: "+ CCPC stock-option benefit — deferred under ITA s.7(1.1), shares not yet disposed (Sch. III §11)", amount: ccpcStockOptionBenefit });
+  if (partnershipNonArmsLengthAddBack > 0)
+    guidelinesIncomeComponents.push({ label: "+ Partnership / sole-prop non-arm's-length add-back (Sch. III §10)", amount: partnershipNonArmsLengthAddBack });
+  if (unionDues > 0)
+    guidelinesIncomeComponents.push({ label: "− Union / professional dues (Sch. III §1 / ITA s.8(1)(i))", amount: -unionDues });
+  if (employmentExpensesOther > 0)
+    guidelinesIncomeComponents.push({ label: "− Other employment expenses (Sch. III §1 / ITA s.8)", amount: -employmentExpensesOther });
+  if (carryingCharges > 0)
+    guidelinesIncomeComponents.push({ label: "− Carrying charges / investment interest (Sch. III §8 / ITA s.20(1))", amount: -carryingCharges });
+  if (businessInvestmentLosses > 0)
+    guidelinesIncomeComponents.push({ label: "− Business investment losses — full 100% actual loss (Sch. III §7 / ITA s.39(1)(c); tax side uses 50% ABIL)", amount: -businessInvestmentLosses });
+  if (splitPensionTransfereeDeduct > 0)
+    guidelinesIncomeComponents.push({ label: "− Split-pension amount received (transferee — Sch. III §3.1 / ITA s.60.03; pension stays with original earner for Guidelines)", amount: -splitPensionTransfereeDeduct });
+  if (priorPeriodSelfEmploymentAdjustment > 0)
+    guidelinesIncomeComponents.push({ label: "− Prior-period self-employment adjustment (Sch. III §9 / ITA s.34.1)", amount: -priorPeriodSelfEmploymentAdjustment });
+  if (priorChildSupportPaid > 0)
+    guidelinesIncomeComponents.push({ label: "− Prior child support paid (to a previous family — FCSG practice)", amount: -priorChildSupportPaid });
+  if (priorSpousalSupportPaid > 0)
+    guidelinesIncomeComponents.push({ label: "− Prior spousal support paid (to a previous spouse — FCSG practice)", amount: -priorSpousalSupportPaid });
+  const guidelinesIncome =
+    grossIncome
+    + selfEmploymentIncome
+    + pensionIncome
+    + otherIncome
+    + rrspWithdrawals
+    + capitalGainsActual
+    + eligibleDividends
+    + nonEligibleDividends
+    + nonTaxableIncomeRaw * 1.25
+    + priorSpousalSupportReceived
+    + splitPensionAddBack
+    + ccpcStockOptionBenefit
+    + partnershipNonArmsLengthAddBack
+    - splitPensionTransfereeDeduct
+    - unionDues
+    - employmentExpensesOther
+    - carryingCharges
+    - businessInvestmentLosses
+    - priorPeriodSelfEmploymentAdjustment
+    - priorChildSupportPaid
+    - priorSpousalSupportPaid;
+  guidelinesIncomeComponents.push({ label: "Guidelines income (FCSG s.16 / Sch. III)", amount: guidelinesIncome });
 
   // ── Payroll (computed early — base CPP and EI are non-refundable credits) ──
   const cppTotal = calculateCPP(grossIncome) + seCPP.totalContribution;
@@ -1594,6 +1708,9 @@ function buildSpouseDetail(params: {
     nonEligibleDividends,
     age,
     overrides: params.overrides,
+    employmentExpensesOther,
+    carryingCharges,
+    businessInvestmentLosses,
   });
   const nonTaxableIncome = params.nonTaxableIncome ?? 0;
   const netIncome = netIncomeResult.netIncome + nonTaxableIncome;
@@ -1614,6 +1731,8 @@ function buildSpouseDetail(params: {
     spousalSupportReceived,
     taxableIncomeComponents,
     taxableIncome,
+    guidelinesIncomeComponents,
+    guidelinesIncome,
     federalTax,
     provincialTax,
     payroll: {
@@ -1994,6 +2113,14 @@ export function buildDetailedReport(
         priorSpousalSupportPaid: spouseInput.priorSpousalSupportPaid,
         priorSpousalSupportReceived: spouseInput.priorSpousalSupportReceived,
         priorChildSupportReceived: spouseInput.priorChildSupportReceived,
+        employmentExpensesOther: spouseInput.employmentExpensesOther,
+        carryingCharges: spouseInput.carryingCharges,
+        businessInvestmentLosses: spouseInput.businessInvestmentLosses,
+        splitPensionAddBack: spouseInput.splitPensionAddBack,
+        splitPensionTransfereeDeduct: spouseInput.splitPensionTransfereeDeduct,
+        ccpcStockOptionBenefit: spouseInput.ccpcStockOptionBenefit,
+        partnershipNonArmsLengthAddBack: spouseInput.partnershipNonArmsLengthAddBack,
+        priorPeriodSelfEmploymentAdjustment: spouseInput.priorPeriodSelfEmploymentAdjustment,
         isImputed: spouseInput.isImputed ?? false,
         isCoupled: spouseInput.isCoupled ?? false,
         newPartnerNetIncome: spouseInput.newPartnerNetIncome ?? 0,
@@ -2257,14 +2384,21 @@ export function buildDetailedReport(
   const eligibleDividendsArr = [input.spouse1.eligibleDividends ?? 0, input.spouse2.eligibleDividends ?? 0] as const;
   const nonEligibleDividendsArr = [input.spouse1.nonEligibleDividends ?? 0, input.spouse2.nonEligibleDividends ?? 0] as const;
 
-  // Section 7 apportionment — on Guidelines income (all sources), not just employment.
+  // Section 7 apportionment — apportioned DYNAMICALLY on POST-transfer
+  // Guidelines income at the mid SS level (FCSG §7(2) / SSAG §8(b)), so the
+  // detail page reconciles exactly with the summary table's Mid-level INDIs.
+  // Using pre-transfer shares here would show a different numerator for each
+  // party's INDI than the solver produced.
   const payorIncome = incomes[result.payor - 1];
   const recipientIncome = incomes[result.recipient - 1];
   const payorSpouseData = result.payor === 1 ? input.spouse1 : input.spouse2;
   const recipientSpouseData = result.recipient === 1 ? input.spouse1 : input.spouse2;
+  const midSSAnnualForS7 = result.monthlyAmount.mid * 12;
+  const payorGLPostMid = totalGuidelinesIncome(payorSpouseData) - midSSAnnualForS7;
+  const recipientGLPostMid = totalGuidelinesIncome(recipientSpouseData) + midSSAnnualForS7;
   const s7Shares = calculateSection7Shares(
-    totalGuidelinesIncome(payorSpouseData),
-    totalGuidelinesIncome(recipientSpouseData),
+    payorGLPostMid,
+    recipientGLPostMid,
     input.children.section7MonthlyTotal,
   );
   const payorSpouseKey = result.payor === 1 ? "spouse1" : "spouse2";
@@ -2354,6 +2488,14 @@ export function buildDetailedReport(
     priorSpousalSupportPaid: payorSpouseInput.priorSpousalSupportPaid,
     priorSpousalSupportReceived: payorSpouseInput.priorSpousalSupportReceived,
     priorChildSupportReceived: payorSpouseInput.priorChildSupportReceived,
+    employmentExpensesOther: payorSpouseInput.employmentExpensesOther,
+    carryingCharges: payorSpouseInput.carryingCharges,
+    businessInvestmentLosses: payorSpouseInput.businessInvestmentLosses,
+    splitPensionAddBack: payorSpouseInput.splitPensionAddBack,
+    splitPensionTransfereeDeduct: payorSpouseInput.splitPensionTransfereeDeduct,
+    ccpcStockOptionBenefit: payorSpouseInput.ccpcStockOptionBenefit,
+    partnershipNonArmsLengthAddBack: payorSpouseInput.partnershipNonArmsLengthAddBack,
+    priorPeriodSelfEmploymentAdjustment: payorSpouseInput.priorPeriodSelfEmploymentAdjustment,
     isImputed: payorSpouseInput.isImputed ?? false,
     isCoupled: payorSpouseInput.isCoupled ?? false,
     newPartnerNetIncome: payorSpouseInput.newPartnerNetIncome ?? 0,
@@ -2400,6 +2542,14 @@ export function buildDetailedReport(
     priorSpousalSupportPaid: recipientSpouseInput.priorSpousalSupportPaid,
     priorSpousalSupportReceived: recipientSpouseInput.priorSpousalSupportReceived,
     priorChildSupportReceived: recipientSpouseInput.priorChildSupportReceived,
+    employmentExpensesOther: recipientSpouseInput.employmentExpensesOther,
+    carryingCharges: recipientSpouseInput.carryingCharges,
+    businessInvestmentLosses: recipientSpouseInput.businessInvestmentLosses,
+    splitPensionAddBack: recipientSpouseInput.splitPensionAddBack,
+    splitPensionTransfereeDeduct: recipientSpouseInput.splitPensionTransfereeDeduct,
+    ccpcStockOptionBenefit: recipientSpouseInput.ccpcStockOptionBenefit,
+    partnershipNonArmsLengthAddBack: recipientSpouseInput.partnershipNonArmsLengthAddBack,
+    priorPeriodSelfEmploymentAdjustment: recipientSpouseInput.priorPeriodSelfEmploymentAdjustment,
     isImputed: recipientSpouseInput.isImputed ?? false,
     isCoupled: recipientSpouseInput.isCoupled ?? false,
     newPartnerNetIncome: recipientSpouseInput.newPartnerNetIncome ?? 0,

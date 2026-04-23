@@ -97,6 +97,15 @@ export interface SpouseFinancialDetail {
   taxableIncomeComponents: Array<{ label: string; amount: number }>;
   taxableIncome: number;
 
+  /**
+   * FCSG Schedule III breakdown — how Guidelines income was assembled from
+   * each source and deduction, one row per non-zero input. Terminal row is
+   * always the Guidelines income total. Every row is labelled with the
+   * Sch. III or ITA citation so the auditor can follow the derivation.
+   */
+  guidelinesIncomeComponents: Array<{ label: string; amount: number }>;
+  guidelinesIncome: number;
+
   federalTax: BracketTaxDetail;
   provincialTax: BracketTaxDetail;
   payroll: PayrollDetail;

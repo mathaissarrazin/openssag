@@ -73,6 +73,12 @@ export interface INDIInputs {
   priorSpousalSupportPaid?: number;
   /** Prior SS received — stacked onto taxable SS received. */
   priorSpousalSupportReceived?: number;
+  /** FCSG Sch. III §1 — other ITA s.8 employment expenses (tax-deductible). */
+  employmentExpensesOther?: number;
+  /** FCSG Sch. III §8 — carrying charges / investment interest (tax-deductible). */
+  carryingCharges?: number;
+  /** FCSG Sch. III §7 — actual BIL; 50% ABIL deducted for tax. */
+  businessInvestmentLosses?: number;
 }
 
 export function calculateINDI(inputs: INDIInputs): number {
@@ -103,6 +109,9 @@ export function calculateINDI(inputs: INDIInputs): number {
     nonEligibleDividends: inputs.nonEligibleDividends,
     age: inputs.age,
     overrides: inputs.overrides,
+    employmentExpensesOther: inputs.employmentExpensesOther,
+    carryingCharges: inputs.carryingCharges,
+    businessInvestmentLosses: inputs.businessInvestmentLosses,
   });
 
   return (
@@ -169,6 +178,12 @@ export interface SolverParty {
   priorSpousalSupportPaid?: number;
   /** Prior SS received — stacked onto taxable SS received. */
   priorSpousalSupportReceived?: number;
+  /** FCSG Sch. III §1 — other ITA s.8 employment expenses (tax-deductible). */
+  employmentExpensesOther?: number;
+  /** FCSG Sch. III §8 — carrying charges / investment interest (tax-deductible). */
+  carryingCharges?: number;
+  /** FCSG Sch. III §7 — actual BIL; 50% ABIL deducted for tax. */
+  businessInvestmentLosses?: number;
 }
 
 export interface INDIBreakdown {
@@ -225,6 +240,9 @@ export function calculateBothINDIs(
     priorChildSupportPaid: ssPayor.priorChildSupportPaid,
     priorSpousalSupportPaid: ssPayor.priorSpousalSupportPaid,
     priorSpousalSupportReceived: ssPayor.priorSpousalSupportReceived,
+    employmentExpensesOther: ssPayor.employmentExpensesOther,
+    carryingCharges: ssPayor.carryingCharges,
+    businessInvestmentLosses: ssPayor.businessInvestmentLosses,
   });
 
   const ssRecipientINDI = calculateINDI({
@@ -254,6 +272,9 @@ export function calculateBothINDIs(
     priorChildSupportPaid: ssRecipient.priorChildSupportPaid,
     priorSpousalSupportPaid: ssRecipient.priorSpousalSupportPaid,
     priorSpousalSupportReceived: ssRecipient.priorSpousalSupportReceived,
+    employmentExpensesOther: ssRecipient.employmentExpensesOther,
+    carryingCharges: ssRecipient.carryingCharges,
+    businessInvestmentLosses: ssRecipient.businessInvestmentLosses,
   });
 
   const combined = ssPayorINDI + ssRecipientINDI;
