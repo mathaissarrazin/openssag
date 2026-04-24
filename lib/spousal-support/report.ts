@@ -1313,15 +1313,15 @@ function buildSpouseDetail(params: {
       benefits.push({
         benefitName: "BC Family Benefit",
         benefitYear: BC_FAMILY_BENEFIT_2025_2026.benefitYear,
-        maxAmount: bcfbRaw,
+        maxAmount: bcfbMaxFull,
         finalAmount: bcfbFinal,
         multiplier: ccbMultiplier,
         notes: [
           `tiered per-child ($${b.firstChildAmount}/$${b.secondChildAmount}/$${b.additionalChildAmount}) with guaranteed minimums`,
           isSingleParent ? "single-parent supplement included" : "",
           bcfbMaxFull !== bcfbRaw
-            ? `phased down from $${bcfbMaxFull.toLocaleString()} → $${Math.round(bcfbRaw).toLocaleString()}. Schedule: (1) base $${bcfbMaxFull.toLocaleString()} at AFNI ≤ $${b.lowerThreshold.toLocaleString()}; (2) AFNI $${b.lowerThreshold.toLocaleString()}–$${b.upperThreshold.toLocaleString()}: ${(b.phaseOutRate * 100).toFixed(0)}% phase-out toward floor of $${bcfbMinFull.toLocaleString()}; (3) AFNI > $${b.upperThreshold.toLocaleString()}: ${(b.phaseOutRate * 100).toFixed(0)}% on excess from the floor`
-            : `max at AFNI ≤ $${b.lowerThreshold.toLocaleString()} (phase-out begins thereafter at ${(b.phaseOutRate * 100).toFixed(0)}%)`,
+            ? `phased down from $${bcfbMaxFull.toLocaleString()} to $${Math.round(bcfbRaw).toLocaleString()}. Schedule: (1) base $${bcfbMaxFull.toLocaleString()} at AFNI up to $${b.lowerThreshold.toLocaleString()}; (2) AFNI $${b.lowerThreshold.toLocaleString()}-$${b.upperThreshold.toLocaleString()}: ${(b.phaseOutRate * 100).toFixed(0)}% phase-out toward floor of $${bcfbMinFull.toLocaleString()}; (3) AFNI > $${b.upperThreshold.toLocaleString()}: ${(b.phaseOutRate * 100).toFixed(0)}% on excess from the floor`
+            : `max at AFNI up to $${b.lowerThreshold.toLocaleString()} (phase-out begins thereafter at ${(b.phaseOutRate * 100).toFixed(0)}%)`,
           ccbMultiplier === 0.5 ? "× 0.5 shared custody" : "",
         ].filter(Boolean),
       });
