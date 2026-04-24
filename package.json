@@ -5,6 +5,14 @@
   "license": "Apache-2.0",
   "type": "module",
   "main": "lib/spousal-support/calculator.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/openssag/openssag.git"
+  },
+  "bugs": {
+    "url": "https://github.com/openssag/openssag/issues"
+  },
+  "homepage": "https://github.com/openssag/openssag#readme",
   "scripts": {
     "audit:cli": "tsx scripts/audit-run.ts",
     "validate:ssag": "tsx scripts/validate-ssag.ts",

@@ -24,8 +24,8 @@ OpenSSAG is not yet published to npm. For now, consume it by cloning this
 repository and importing from `lib/` directly:
 
 ```bash
-git clone https://github.com/mathaissarrazin/OpenSSAG.git
-cd OpenSSAG
+git clone https://github.com/openssag/openssag.git
+cd openssag
 npm install
 ```
 
